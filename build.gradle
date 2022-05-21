@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.6.7'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "com.avast.gradle.docker-compose" version "0.14.9"
     id 'java'
 }
 
@@ -12,6 +13,17 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+}
+
+dockerCompose.isRequiredBy(test)
+
+dockerCompose {
+    projectName = project.name
+    projectNamePrefix  = 'docker-compose'
+    stopContainers = true
+    removeContainers = true
+    removeOrphans = true
+    forceRecreate = true
 }
 
 repositories {
@@ -32,6 +44,9 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    testImplementation 'org.axonframework:axon-test:4.5.9'
+
 }
 
 tasks.named('test') {
