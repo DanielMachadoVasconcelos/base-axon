@@ -1,0 +1,4 @@
+# spring data mongo database
+spring:
+  elasticsearch:
+    uris: "http://elasticsearch:9200"

@@ -1,9 +1,8 @@
 version: '3.3'
 services:
   axonserver:
-    image: axoniq/axonserver
+    image: axoniq/axonserver:4.5.10-jdk-17-dev
     container_name: axon
-    hostname: axonserver
     volumes:
       - axonserver-data:/data
       - axonserver-events:/eventdata
@@ -13,25 +12,34 @@ services:
       - '8124:8124'
       - '8224:8224'
     networks:
-      - axon-demo
+      - integration-test
+    healthcheck:
+      test: "curl -f http://localhost:8024/actuator/health || exit 1;"
+      interval: 1s
+      timeout: 1s
+      retries: 10
 
-  mongodb:
-    image: mongo:5.0
-    container_name: mongo
-    hostname: mongoserver
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo-data:/data/db
-    environment:
-      - MONGO_INITDB_DATABASE=event-store
-      - MONGO_INITDB_ROOT_USERNAME=username
-      - MONGO_INITDB_ROOT_PASSWORD=password
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.2
+    container_name: elasticsearch
     networks:
-      - axon-demo
+      - integration-test
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: "curl -f elasticsearch:9200/_cluster/health?wait_for_status=yellow&timeout=2s || exit 1"
+      interval: 1s
+      timeout: 1s
+      retries: 10
 
 volumes:
-  mongo-data:
+  elasticsearch-data:
     driver: local
   axonserver-data:
     driver: local
@@ -41,4 +49,4 @@ volumes:
     driver: local
 
 networks:
-  axon-demo:
+  integration-test:
