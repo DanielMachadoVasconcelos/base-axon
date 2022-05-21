@@ -1,16 +1,18 @@
-version: '3.3'
+version: '3.9'
 services:
+
   axonserver:
     image: axoniq/axonserver:4.5.10-jdk-17-dev
-    container_name: axon
+    container_name: axonserver
+    hostname: axonserver
     volumes:
       - axonserver-data:/data
       - axonserver-events:/eventdata
       - axonserver-config:/config:ro
     ports:
-      - '8024:8024'
-      - '8124:8124'
-      - '8224:8224'
+      - "8024:8024"
+      - "8124:8124"
+
     networks:
       - integration-test
     healthcheck:
