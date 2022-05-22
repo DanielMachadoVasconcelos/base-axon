@@ -5,9 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class OrderCreatedEvent {
- 
-    private final String orderId;
-    private final String productId;
+public class AppointmentConfirmedEvent {
+
+    private final String appointmentId;
  
 }
