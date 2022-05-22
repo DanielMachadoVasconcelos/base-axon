@@ -6,9 +6,9 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Data
 @AllArgsConstructor
-public class ShipOrderCommand {
+public class ConfirmAppointmentCommand {
  
     @TargetAggregateIdentifier
-    private final String orderId;
- 
+    private final String appointmentId;
+
 }

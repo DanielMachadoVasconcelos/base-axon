@@ -6,9 +6,9 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Data
 @AllArgsConstructor
-public class ConfirmOrderCommand {
- 
+public class CancelAppointmentCommand {
+
     @TargetAggregateIdentifier
-    private final String orderId;
-    
+    private final String appointmentId;
+
 }
