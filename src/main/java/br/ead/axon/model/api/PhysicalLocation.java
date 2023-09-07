@@ -1,20 +1,22 @@
 package br.ead.axon.model.api;
 
+import br.ead.axon.model.entities.Appointment;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName="physical-location")
-public class PhysicalLocation implements Location {
+@Entity(name="physical_location")
+@DiscriminatorValue("physical")
+public class PhysicalLocation extends Location {
 
-    private String typeOfLocation = "physical";
+    @Column(name = "address")
     private String address;
 
-    public PhysicalLocation(String address) {
-        this.address = address;
-    }
 }

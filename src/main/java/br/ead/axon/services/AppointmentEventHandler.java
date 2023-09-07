@@ -26,12 +26,15 @@ public class AppointmentEventHandler {
     @EventHandler
     public void on(AppointmentBookedEvent event) {
         log.info("Handling the AppointmentBookedEvent [{}]", event);
-        appointmentRepository.save(new Appointment(event.getAppointmentId(),
+        Appointment appointment = new Appointment(event.getAppointmentId(),
                 event.getStartAt(),
                 event.getEndAt(),
                 event.getLocation(),
                 event.getParticipants(),
-                AppointmentStatus.CREATED));
+                AppointmentStatus.CREATED);
+        Appointment persisted = appointmentRepository.save(appointment);
+
+        log.info("Persisted the Appointment [{}]", persisted);
     }
 
     @EventHandler

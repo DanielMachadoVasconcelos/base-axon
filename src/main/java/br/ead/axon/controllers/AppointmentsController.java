@@ -9,6 +9,7 @@ import br.ead.axon.model.entities.Appointment;
 import br.ead.axon.model.requests.BookAppointmentRequest;
 import br.ead.axon.model.requests.RescheduleAppointmentRequest;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
@@ -29,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Log4j2
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/appointments")
 public class AppointmentsController {
 
@@ -37,14 +38,17 @@ public class AppointmentsController {
     private final QueryGateway queryGateway;
 
     @PostMapping("/book")
-    public CompletableFuture<Void> bookAppointment(@RequestBody @Valid BookAppointmentRequest request) {
+    public BookAppointmentResponse bookAppointment(@RequestBody @Valid BookAppointmentRequest request) {
         var appointmentId = UUID.randomUUID().toString();
         log.info("Received a Http request for booking appointment. appointmentId = {}", appointmentId);
-        return commandGateway.send(new BookAppointmentCommand(appointmentId,
+
+        BookAppointmentCommand command = new BookAppointmentCommand(appointmentId,
                 request.getStartAt(),
                 request.getEndAt(),
                 request.getLocation(),
-                request.getParticipants()));
+                request.getParticipants());
+        String result = commandGateway.sendAndWait(command);
+        return new BookAppointmentResponse(UUID.fromString(result));
     }
 
     @PutMapping("{appointmentId}/confirm")

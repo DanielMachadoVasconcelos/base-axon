@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name="patient")
-@DiscriminatorValue("patient")
-public class PatientParticipant extends Participant {
+@Entity(name="clinician")
+@DiscriminatorValue("clinician")
+public class ClinicianParticipant extends Participant {
 
     private String id;
 }

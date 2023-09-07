@@ -1,18 +1,22 @@
 package br.ead.axon.model.api;
 
+import br.ead.axon.model.entities.Appointment;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.elasticsearch.annotations.Document;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName="digital-location")
-public class DigitalLocation implements Location {
+@Entity(name="digital_location")
+@DiscriminatorValue("digital")
+public class DigitalLocation extends Location {
 
+    @Column(name = "url")
     private String url;
-    private String typeOfLocation = "digital";
 
-    public DigitalLocation(String url) {
-        this.url = url;
-    }
 }

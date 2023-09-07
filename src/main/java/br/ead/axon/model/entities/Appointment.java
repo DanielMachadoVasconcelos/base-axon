@@ -2,17 +2,22 @@ package br.ead.axon.model.entities;
 
 import br.ead.axon.model.api.Location;
 import br.ead.axon.model.api.Participant;
-import br.ead.axon.model.entities.converters.CustomZonedDateTimeConverter;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Value;
+import lombok.NoArgsConstructor;
 import lombok.With;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.ValueConverter;
 
 import java.time.ZonedDateTime;
 import java.util.Set;
@@ -20,23 +25,33 @@ import java.util.Set;
 @With
 @Data
 @AllArgsConstructor
-@Document(indexName = "appointments")
+@NoArgsConstructor
+@Entity(name = "appointment")
 public final class Appointment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String appointmentId;
 
-    @ValueConverter(CustomZonedDateTimeConverter.class)
-    @Field(type = FieldType.Date, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSX||uuuu-MM-dd'T'HH:mm:ss.SSS", format = {})
+    @Column(name = "start_at")
     private ZonedDateTime startAt;
 
-    @ValueConverter(CustomZonedDateTimeConverter.class)
-    @Field(type = FieldType.Date, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSX||uuuu-MM-dd'T'HH:mm:ss.SSS", format = {})
+    @Column(name = "end_at")
     private ZonedDateTime endAt;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id")
     private Location location;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "appointment_participants",
+        joinColumns = @JoinColumn(name = "appointment_id"),
+        inverseJoinColumns = @JoinColumn(name = "participant_id")
+    )
     private Set<Participant> participants;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "appointment_status")
     private AppointmentStatus appointmentStatus;
 }

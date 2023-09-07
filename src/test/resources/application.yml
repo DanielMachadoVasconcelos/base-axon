@@ -1,4 +1,15 @@
 spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      write-durations-as-timestamps: false
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
   docker:
     compose:
       lifecycle-management: START_ONLY

@@ -3,16 +3,11 @@ package br.ead.axon.service;
 import br.ead.axon.exceptions.InvalidAppointmentPeriodException;
 import br.ead.axon.messages.AppointmentAggregate;
 import br.ead.axon.messages.commands.BookAppointmentCommand;
-import br.ead.axon.messages.commands.ConfirmAppointmentCommand;
-import br.ead.axon.messages.commands.RescheduleAppointmentCommand;
-import br.ead.axon.messages.events.AppointmentBookedEvent;
-import br.ead.axon.messages.events.AppointmentConfirmedEvent;
-import br.ead.axon.messages.events.AppointmentRescheduleEvent;
 import br.ead.axon.model.api.Location;
 import br.ead.axon.model.api.Participant;
 import br.ead.axon.model.api.PatientParticipant;
 import br.ead.axon.model.api.PhysicalLocation;
-import br.ead.axon.model.api.PractitionerParticipant;
+import br.ead.axon.model.api.ClinicianParticipant;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +31,7 @@ public class BookAppointmentTest {
         var appointmentId = UUID.randomUUID().toString();
         var startAtInPast = ZonedDateTime.now().minusHours(1);
         var endAt = startAtInPast.plusMinutes(15);
-        Set<Participant> participants = Set.of(new PractitionerParticipant("1"), new PatientParticipant("2"));
+        Set<Participant> participants = Set.of(new ClinicianParticipant("1"), new PatientParticipant("2"));
         Location location = new PhysicalLocation();
         fixture.givenNoPriorActivity()
                 .when(new BookAppointmentCommand(appointmentId, startAtInPast, endAt, location, participants))
@@ -49,7 +44,7 @@ public class BookAppointmentTest {
         var oneHourInFuture = ZonedDateTime.now().plusHours(1);
         var startAt = oneHourInFuture;
         var endAt = oneHourInFuture;
-        Set<Participant> participants = Set.of(new PractitionerParticipant("1"), new PatientParticipant("2"));
+        Set<Participant> participants = Set.of(new ClinicianParticipant("1"), new PatientParticipant("2"));
         Location location = new PhysicalLocation();
         fixture.givenNoPriorActivity()
                 .when(new BookAppointmentCommand(appointmentId, startAt, endAt, location, participants))
