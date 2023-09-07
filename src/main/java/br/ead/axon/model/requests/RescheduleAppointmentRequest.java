@@ -3,7 +3,7 @@ package br.ead.axon.model.requests;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.FutureOrPresent;
 import java.time.ZonedDateTime;
 
 @Data

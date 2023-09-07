@@ -1,7 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.7'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id "com.avast.gradle.docker-compose" version "0.14.9"
+    id 'org.springframework.boot' version '3.1.2'
+    id 'io.spring.dependency-management' version '1.1.2'
     id 'java'
 }
 
@@ -13,17 +12,6 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-}
-
-dockerCompose.isRequiredBy(test)
-
-dockerCompose {
-    projectName = project.name
-    projectNamePrefix  = 'docker-compose'
-    stopContainers = true
-    removeContainers = true
-    removeOrphans = true
-    forceRecreate = true
 }
 
 repositories {
@@ -38,6 +26,11 @@ dependencies {
     implementation 'org.axonframework:axon-spring-boot-starter:4.5.9'
 
     implementation 'org.hibernate:hibernate-validator:7.0.1.Final'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+
+    testImplementation 'org.springframework.boot:spring-boot-docker-compose'
 
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.apache.logging.log4j:log4j-api'

@@ -1,0 +1,6 @@
+spring:
+  docker:
+    compose:
+      lifecycle-management: START_ONLY
+      skip:
+        in-tests: false
