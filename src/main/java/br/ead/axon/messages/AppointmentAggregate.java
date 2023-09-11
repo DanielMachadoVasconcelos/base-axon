@@ -46,7 +46,6 @@ public class AppointmentAggregate {
 
     @CommandHandler
     public AppointmentAggregate(BookAppointmentCommand command) {
-        log.info("Received a BookAppointmentCommand. AppointmentId = {}", command.getAppointmentId());
 
         if(command.getStartAt().isBefore(ZonedDateTime.now().plusMinutes(15))) {
             throw new InvalidAppointmentPeriodException("Period of date time is invalid. Appointment needs to happen in the future.");

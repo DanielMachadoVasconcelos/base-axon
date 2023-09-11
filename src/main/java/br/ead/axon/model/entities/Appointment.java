@@ -30,7 +30,7 @@ import java.util.Set;
 public final class Appointment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String appointmentId;
 
     @Column(name = "start_at")

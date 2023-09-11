@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
+import org.jeasy.rules.api.RulesEngine;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +34,6 @@ public class AppointmentEventHandler {
                 event.getParticipants(),
                 AppointmentStatus.CREATED);
         Appointment persisted = appointmentRepository.save(appointment);
-
         log.info("Persisted the Appointment [{}]", persisted);
     }
 

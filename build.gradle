@@ -27,6 +27,8 @@ dependencies {
         exclude group: 'org.axonframework', module: 'axon-server-connector'
     }
 
+    implementation 'org.jeasy:easy-rules-core:4.0.0'
+
     implementation 'org.hibernate:hibernate-validator:7.0.1.Final'
     implementation 'mysql:mysql-connector-java:8.0.26'
 

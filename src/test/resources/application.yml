@@ -6,8 +6,12 @@ spring:
 
   jpa:
     show-sql: true
+    format_sql: true
     hibernate:
       ddl-auto: update
+      format_sql: true
+      jdbc:
+          time_zone: UTC
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
   docker:

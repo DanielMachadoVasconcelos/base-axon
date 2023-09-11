@@ -1,15 +1,16 @@
 package br.ead.axon.exceptions;
 
+import org.springframework.http.ProblemDetail;
+
 public class InvalidAppointmentPeriodException extends IllegalArgumentException {
 
-    public InvalidAppointmentPeriodException() {
+    private ProblemDetail problemDetail;
+
+    public InvalidAppointmentPeriodException(ProblemDetail problemDetail) {
+        this.problemDetail = problemDetail;
     }
 
-    public InvalidAppointmentPeriodException(String message) {
-        super(message);
-    }
-
-    public InvalidAppointmentPeriodException(String message, Throwable cause) {
-        super(message, cause);
+    public InvalidAppointmentPeriodException(String s) {
+        super(s);
     }
 }

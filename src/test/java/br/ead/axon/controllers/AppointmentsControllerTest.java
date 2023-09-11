@@ -37,24 +37,25 @@ class AppointmentsControllerTest extends SpringBootIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("Should be Able to book an appointment when the location is digital")
+    @DisplayName("Should be able to book an appointment when the location is digital")
     void shouldBeAbleToBookAnAppointmentWhenTheLocationIsDigital() throws Exception {
 
-        // given: A valid command to book an appointment with a digital location in the future
+        // given: A valid request to book an appointment with a digital location in the future
         ZonedDateTime today = ZonedDateTime.now(Clock.systemUTC());
-        var command = new BookAppointmentRequest(today.plusDays(1l),
+        var request = new BookAppointmentRequest(today.plusDays(1l),
                 today.plusDays(1l).plusHours(1l),
                 new DigitalLocation("http://localhost:8181/live-room/%s".formatted(UUID.randomUUID().toString())),
-                Set.of(new ClinicianParticipant(UUID.randomUUID().toString()),
+                Set.of(
+                        new ClinicianParticipant(UUID.randomUUID().toString()),
                         new PatientParticipant(UUID.randomUUID().toString())
                 )
         );
 
-        // when: The endpoint is called with the command
+        // when: The endpoint is called with the request
         var response = mockMvc.perform(post("/api/v1/appointments/book")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("utf-8")
-                .content(objectMapper.writeValueAsString(command)));
+                .content(objectMapper.writeValueAsString(request)));
 
         // then: The response has the expected value
         response.andDo(print())
@@ -62,5 +63,4 @@ class AppointmentsControllerTest extends SpringBootIntegrationTest {
                 .andExpect(jsonPath("$.appointment_id").value(notNullValue()));
 
     }
-
 }

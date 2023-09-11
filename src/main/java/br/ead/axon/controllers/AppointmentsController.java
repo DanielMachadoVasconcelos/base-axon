@@ -8,10 +8,14 @@ import br.ead.axon.model.querry.FindAllAppointmentQuery;
 import br.ead.axon.model.entities.Appointment;
 import br.ead.axon.model.requests.BookAppointmentRequest;
 import br.ead.axon.model.requests.RescheduleAppointmentRequest;
+import br.ead.axon.services.AppointmentCommandHandler;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.messaging.MetaData;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,48 +38,46 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/v1/appointments")
 public class AppointmentsController {
 
-    private final CommandGateway commandGateway;
-    private final QueryGateway queryGateway;
+    private final AppointmentCommandHandler commandHandler;
 
     @PostMapping("/book")
     public BookAppointmentResponse bookAppointment(@RequestBody @Valid BookAppointmentRequest request) {
         var appointmentId = UUID.randomUUID().toString();
         log.info("Received a Http request for booking appointment. appointmentId = {}", appointmentId);
-
         BookAppointmentCommand command = new BookAppointmentCommand(appointmentId,
                 request.getStartAt(),
                 request.getEndAt(),
                 request.getLocation(),
                 request.getParticipants());
-        String result = commandGateway.sendAndWait(command);
-        return new BookAppointmentResponse(UUID.fromString(result));
+        commandHandler.dispatch(command);
+        return new BookAppointmentResponse(UUID.fromString(appointmentId));
     }
 
     @PutMapping("{appointmentId}/confirm")
-    public CompletableFuture<Void> confirmAppointment(@PathVariable @NotEmpty String appointmentId) {
+    public String confirmAppointment(@PathVariable @NotEmpty String appointmentId) {
         log.info("Received a Http request for confirm Appointment. appointmentId = {}", appointmentId);
-        return commandGateway.send(new ConfirmAppointmentCommand(appointmentId));
+        return commandHandler.dispatch(new ConfirmAppointmentCommand(appointmentId));
     }
 
     @PutMapping("{appointmentId}/reschedule")
-    public CompletableFuture<Void> rescheduleAppointment(@PathVariable @NotEmpty String appointmentId,
+    public String rescheduleAppointment(@PathVariable @NotEmpty String appointmentId,
                                                          @RequestBody @Valid RescheduleAppointmentRequest request) {
         log.info("Received a Http request for reschedule Appointment. appointmentId = {}", appointmentId);
-        return commandGateway.send(new RescheduleAppointmentCommand(appointmentId,
+        return commandHandler.dispatch(new RescheduleAppointmentCommand(appointmentId,
                 request.getStartAt(),
                 request.getEndAt()));
     }
 
     @PutMapping("{appointmentId}/cancel")
-    public CompletableFuture<Void> cancelAppointment(@PathVariable @NotEmpty String appointmentId) {
+    public String cancelAppointment(@PathVariable @NotEmpty String appointmentId) {
         log.info("Received a Http request for cancel Appointment. appointmentId = {}", appointmentId);
-        return commandGateway.send(new CancelAppointmentCommand(appointmentId));
+        return commandHandler.dispatch(new CancelAppointmentCommand(appointmentId));
     }
 
     @GetMapping("/")
-    public CompletableFuture<List<Appointment>> findAllOrders() {
+    public List<Appointment> findAllOrders() {
         log.info("Received a Http request for list all orders");
-        return queryGateway.query(new FindAllAppointmentQuery(), ResponseTypes.multipleInstancesOf(Appointment.class));
+        return commandHandler.dispatch(new FindAllAppointmentQuery());
     }
 }
 
